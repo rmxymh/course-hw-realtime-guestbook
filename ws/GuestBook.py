@@ -1,5 +1,5 @@
 from os import name
-from flask_socketio import Namespace, emit, join_room
+from flask_socketio import Namespace, emit, join_room, leave_room
 from flask import request
 import logging
 
@@ -17,8 +17,10 @@ class GuestBookWsHandler(Namespace):
         self.emit('old_post_response', {'posts': posts}, room=request.sid)
 
     def on_disconnect(self):
+        leave_room(request.sid)
+        leave_room('global')
         try:
-            self.clients.remove(request.sid)
+            self.clients.remove(request.sid)           
         except:
             pass
 
